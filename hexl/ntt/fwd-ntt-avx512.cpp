@@ -91,7 +91,7 @@ void FwdButterfly(__m512i* X, __m512i* Y, __m512i W, __m512i W_precon,
   */
 
   __m512i Q = _mm512_hexl_mulhi_epi<BitShift>(W_precon, *Y);
-  __m512i W_Y = _mm512_hexl_mullo_epi<BitShift>(W_op, *Y);
+  __m512i W_Y = _mm512_hexl_mullo_epi<BitShift>(W, *Y);
   __m512i T = _mm512_hexl_mullo_add_lo_epi<BitShift>(W_Y, Q, neg_modulus);
 
   // Discard high 12 bits if BitShift == 52; deals with case when
