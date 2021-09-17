@@ -229,6 +229,7 @@ void NTT::ComputeForward(uint64_t* result, const uint64_t* operand,
 #ifdef HEXL_HAS_AVX512DQ
   double start,end;
   if (has_avx512dq && m_degree >= 16) {
+    /*
     if (m_q < s_max_fwd_32_modulus) {
       HEXL_VLOG(3, "Calling 32-bit AVX512-DQ FwdNTT");
       const uint64_t* root_of_unity_powers =
@@ -244,16 +245,21 @@ void NTT::ComputeForward(uint64_t* result, const uint64_t* operand,
 
       fwd32_time = fwd32_time + (end-start);
     } else {
+    */
       HEXL_VLOG(3, "Calling 64-bit AVX512-DQ FwdNTT");
       const uint64_t* root_of_unity_powers =
           GetAVX512RootOfUnityPowers().data();
       const uint64_t* precon_root_of_unity_powers =
           GetAVX512Precon64RootOfUnityPowers().data();
 
-      ForwardTransformToBitReverseAVX512<s_default_shift_bits>(
+      start = calcTime_overall_hexl();
+      ForwardTransformToBitReverseAVX512<64>(
           result, m_degree, m_q, root_of_unity_powers,
           precon_root_of_unity_powers, input_mod_factor, output_mod_factor);
-    }
+      end = calcTime_overall_hexl();
+
+      fwd32_time = fwd32_time + (end-start);
+    //}
     return;
   }
 #endif
